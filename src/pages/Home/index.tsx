@@ -1,24 +1,21 @@
-import { useEffect, useState } from 'react'
-import Header from '../../components/Header'
-import ProductList from '../../components/ProductList'
-import { Efood } from '../Perfil'
+import Footer from '../../components/Footer'
+import Hero from '../../components/Hero'
+import Loader from '../../components/Loader'
+import RestaurantList from '../../components/RestaurantList'
+import { useGetRestaurantsQuery } from '../../services/api'
 
 const Home = () => {
-  const [catalogoServico, setCatalogoServico] = useState<Efood[]>([])
+  const { data: restaurants } = useGetRestaurantsQuery()
 
-  useEffect(() => {
-    fetch('https://fake-api-tau.vercel.app/api/efood/restaurantes')
-      .then((res) => res.json())
-      .then((res) => setCatalogoServico(res))
-      .catch((error) => console.error('Erro ao carregar dados:', error))
-  }, [])
-
-  return (
-    <>
-      <Header background="light" />
-      <ProductList title="" background="light" efoods={catalogoServico} />
-    </>
-  )
+  if (restaurants) {
+    return (
+      <>
+        <Hero />
+        <RestaurantList restaurants={restaurants} />
+        <Footer />
+      </>
+    )
+  }
+  return <Loader />
 }
-
 export default Home

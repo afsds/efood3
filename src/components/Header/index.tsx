@@ -1,59 +1,27 @@
-import React from 'react'
-import { Link, useLocation } from 'react-router-dom'
-import LogoImgHome from '../../assets/icons/logo.png'
-import BannerImgHome from '../../assets/images/BannerImgHome.png'
-import {
-  CarrinhoDeProdutos,
-  ContainerHeader,
-  HeaderPage,
-  Imagem,
-  RestaurantName,
-  Titulo
-} from './styles'
+import logo from '../../assets/logo.png'
+import { HeaderStyle } from './styles'
+import { Branding, LinkRestaurantes, TextCart } from './styles'
+import { open } from '../../store/reducers/cart'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootReducer } from '../../store'
 
-export type Props = {
-  background: 'light' | 'dark'
-}
-
-const Header = ({ background }: Props) => {
-  const location = useLocation()
-
-  // Defini o texto na localização atual
-  const titleText =
-    location.pathname === '/Perfil'
-      ? ''
-      : 'Viva experiências gastronômicas no conforto da sua casa'
-
-  // Defini o texto na localização atual
-  const titleRestaurate = location.pathname === '/Perfil' ? 'Restaurantes' : ''
-  const titleCarrinho =
-    location.pathname === '/Perfil' ? '0 produto(s) no carrinho' : ''
-
+const Header = () => {
+  const dispatch = useDispatch()
+  const { pedido } = useSelector((state: RootReducer) => state.cart)
+  const openCart = () => {
+    dispatch(open())
+  }
   return (
-    <HeaderPage className="container">
-      <Imagem
-        style={{ backgroundImage: `url(${BannerImgHome})` }}
-        background={background}
-      >
-        <div className="container">
-          <ContainerHeader>
-            <RestaurantName>{titleRestaurate}</RestaurantName>
-            <Link to="/">
-              <img
-                className="imagemLogoLnk"
-                src={LogoImgHome}
-                alt="efood"
-                width="150"
-                height="50" // Definindo altura e largura da imagem
-              />
-            </Link>
-            <CarrinhoDeProdutos>{titleCarrinho}</CarrinhoDeProdutos>
-          </ContainerHeader>
-          <Titulo>{titleText}</Titulo>
-        </div>
-      </Imagem>
-    </HeaderPage>
+    <HeaderStyle>
+      <div className="container">
+        <LinkRestaurantes href="/">Restaurantes</LinkRestaurantes>
+        <Branding src={logo} alt="Logo do restaurante" />
+        <TextCart onClick={openCart}>
+          {pedido.length} produto(s) no carrinho
+        </TextCart>
+      </div>
+    </HeaderStyle>
   )
 }
 
-export default React.memo(Header)
+export default Header
